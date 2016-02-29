@@ -1,0 +1,65 @@
+{% include "master.html" %}
+<div class="container">
+{% if new %}
+<H2>Register</H2>
+{% else %}
+<H2>Edit User Info</H2>
+{% endif %}
+<br>
+{% if new %}
+<form action="/books/adduser/" method="post" enctype="multipart/form-data" >{% csrf_token %}
+{% else %}
+<!--password change buitton-->
+<form action="/books/password/" method="get">{% csrf_token %}
+<button class="btn btn-danger" type="submit" value="Change Password">Change Password</button>
+</form>
+<br>
+<br>
+<!-- -->
+<form action="/books/edituser/" method="post" enctype="multipart/form-data">{% csrf_token %}
+{% endif %}
+
+<div class="form-group row">
+	<label for="id_UserName" class="col-sm-2 form-control-label">Username</label> 
+	<div class="col-sm-2">
+		<input id="id_UserName" type="text" name="UserName" maxlength="100" class="form-control" value="{{user.UserName}}" placeholder="User Name">
+	</div>
+</div>
+<div class="form-group row">
+	<label for="id_FirstName" class="col-sm-2 form-control-label">First Name</label> 
+	<div class="col-sm-2">
+		<input id="id_FirstName" type="text" name="FirstName" maxlength="100" class="form-control" value="{{user.FirstName}}" placeholder="First Name">
+	</div>
+</div>
+
+<div class="form-group row">
+	<label for="id_LastName" class="col-sm-2 form-control-label" >Last Name</label> 
+	<div class="col-sm-2">
+		<input id="id_LastName" type="text" name="LastName" maxlength="100" class="form-control" value="{{user.LastName}}" placeholder="Last Name">
+	</div>
+</div>
+<div class="form-group row">
+	<label for="id_Email" class="col-sm-2 form-control-label">Email</label> 
+	<div class="col-sm-2">
+		<input type="text" name="Email" id="id_Email" class="form-control" value="{{user.Email}}" placeholder="Email">
+	</div>
+</div>
+{%if new%}
+<div class="form-group row">
+	<label for="id_PassWord" class="col-sm-2 form-control-label">Password</label> 
+	<div class="col-sm-2">
+		<input id="id_PassWord" type="password" name="PassWord" maxlength="100" class="form-control" placeholder="Password">
+	</div>
+</div>
+{% endif %}
+<div class="form-group row">
+	<label for="id_Image" class="col-sm-2 form-control-label">Image</label> 
+	<div class="col-sm-2">
+		<input type="file" name="Image" id="id_Image">
+	</div>
+</div>
+
+<!-- {{ form.as_p }}-->
+<button class="btn btn-success" type="submit" value="Submit">Submit</button>
+</form>
+</div>

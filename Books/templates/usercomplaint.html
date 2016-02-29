@@ -1,0 +1,16 @@
+{% include "master.html" %}
+<div class="container">
+<h2> Complaining about {{u.UserName}} </h2>
+
+<form action = "/books/usercomplaint/{{u.id}}/" method = "post">{% csrf_token %}
+<!--{{ form.as_p }}-->
+{% for field in form %}
+		<div class="form-group row"> 
+			<div class="col-md-6">
+			 {{field}}
+			</div>
+		</div>
+	{% endfor %}
+<button class="btn btn-success" type="submit">Submit</button>
+</form>
+</div>

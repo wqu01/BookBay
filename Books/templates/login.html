@@ -1,0 +1,26 @@
+{% include "master.html" %}
+<div class="container">
+	{% if attempt %}
+	<b> Email and/or Password entered incorrectly. Please try again. </b>
+	{% endif %}
+	<div class="forms">
+		<form class="form-signin" action="/books/login/" method="post">
+			{% csrf_token %}
+			<h2 class="form-signin-heading">Sign In</h2>
+			<!--{{ form.as_p }}-->
+			<label for="id_Email" class="src-only"></label> 
+			<input type="email" name="Email" id="id_Email" class="form-control" placeholder="Email address" required autofocus/>
+			<label for="id_PassWord" class="src-only"></label>
+			<input id="id_PassWord" type="password" name="PassWord" class="form-control" placeholder="Password" maxlength="100" required/>
+			<br>
+			<button class="btn btn-md btn-success btn-block" type="submit"/>Sign In </button>
+		</form>
+	
+
+		<form  class="form-register" action="/books/adduser/">{% csrf_token%}
+			<h2>Not Registered?</h2>
+			<button class="btn btn-md btn-primary btn-block" type="submit"/>Join Book Bay!</button>
+		</form>
+	</div>
+</div>
+

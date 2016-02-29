@@ -1,0 +1,106 @@
+{% include "master.html" %}
+<div class="container">
+	<div class="row">
+		<div class="col-md-3 book-cover userinfo">	
+			<figure class="figure">
+			<img class="bookimage img-rounded" src= "{{MEDIA_URL}}/{{book.FrontImage}}">
+			<figcaption class="figure-caption text-center">Front Cover</figcaption>
+			</figure>
+		</div>
+		<div class="col-md-3 book-cover userinfo">
+			<figure class="figure">
+			<img class="bookimage img-rounded"src= "{{MEDIA_URL}}/{{book.BackImage}}">
+			<figcaption class="figure-caption text-center">Back Cover</figcaption>
+			</figure>
+		</div>
+
+
+		<div class="col-md-6 bookinfo lead">
+			<h1>{{book.Title}}</h1>
+			<p><b>Author </b>{{book.Author}}<p>
+			<p><b>Owner </b><a href = "/books/{{book.Owner.id}}"> {{book.Owner.UserName}} </a></p>
+			<p><b>Genre </b>{{book.Genre}}</p>
+			<p><b>Publisher </b>{{book.Publisher}}</p>
+			<p><b>Rating </b>{{book.Rating}} stars</p>
+			{% if user != book.Owner%}
+			<form action="/books/bookcomplaint/{{book.id}}/" method="get" >{% csrf_token %}
+				<button class="btn btn-danger" type="submit">Complain!</button>
+				<p></p>
+			</form>
+			{%endif%}
+			<p><b>Quality </b>
+			{% if book.Quality == 0 %}
+			Old
+			{%endif%}
+
+			{% if book.Quality == 1 %}
+			Worn
+			{%endif%}
+
+			{% if book.Quality == 2 %}
+			Good
+			{%endif%}
+
+			{% if book.Quality == 3 %}
+			Like new
+			{%endif%}
+
+			{%if book.Quality == 4 %}
+			New
+			{% endif %}
+		    </p>
+			<p><b> Abstract </b> {{book.Abstract}} </p>
+			<p><b>For Sale? </b>
+			{%if book.Status == 'auction'%}
+			<a href=/books/auctionbook/{{book.id}}>On Auction</a>
+			{%endif%}
+
+			{%if book.Status == 'sale'%}
+			<a href=/books/salebook/{{book.id}}>For Sale</a>
+			{%endif%}
+
+			{%if book.Status == 'sold'%}
+			Sold
+			{%endif%}
+
+			{%if book.Status == 'nosale' %}
+			Not For Sale
+			{%endif%}
+			</p>
+		</div>
+	</div>
+</div>
+<div class="container">
+	<h2>Comments</h2>
+
+	<ul>
+	{% for i in comments%}
+	<a href = "/books/{{i.PostedBy.id}}/">{{i.PostedBy.UserName}}</a> At {{i.PostDate}}<br>
+	<p> {{i.CommentText}} </p>
+	{% endfor %}
+	</ul>
+	<form action="/books/bookcomment/{{book.id}}/" method="post" >{% csrf_token %}
+	<!--{{textform.as_p}}-->
+	{% for field in textform %}
+		<div class="form-group">
+			 {{field}}
+		</div>
+	{% endfor %}
+
+	<button class="btn btn-success" type="submit">Post!</button>
+	<p></p>
+	</form>
+
+	<form action="/books/ratebook/{{book.id}}/" method="post" >{% csrf_token %}
+	<!--{{rate.as_p}}-->
+		{% for field in rate %}
+		<div class="form-group row">
+			<div class="col-md-2">
+			 {{field}}
+			</div>
+		</div>
+	{% endfor %}
+	<p><button class="btn btn-success" type="submit">Rate!</button></p>
+	</form>
+
+</div>

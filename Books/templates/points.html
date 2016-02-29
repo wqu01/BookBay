@@ -1,0 +1,19 @@
+{% include "master.html" %}
+<div class="container">
+<H2> Get Points </H2>
+
+<p> Low on Points? Buy more here. </p>
+
+<form action="/books/getpoints/" method="post" >{% csrf_token %}
+<!--{{ form.as_p }}-->
+	{% for field in form %}
+		<div class="form-group row">
+			<label for="{{field.id_for_label}}" class="col-sm-2 form-control-label">{{field.label}}</label> 
+			<div class="col-md-4">
+			 {{field}}
+			</div>
+		</div>
+	{% endfor %}
+	<button class="btn btn-success" type="submit">Submit</button>
+</form>
+</div>

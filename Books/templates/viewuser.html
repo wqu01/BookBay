@@ -1,0 +1,134 @@
+{% include "master.html" %}
+
+<div class="container">
+	<div class="row">
+		<div class="col-md-4 userinfo">	
+			<p class="username">{{OU.UserName}}
+			{% if same%} <!-- adding edit user info link if user owns page -->
+			<button type="button" class="btn btn-link btn-sm"><a href='/books/edituser/'>Edit</a></button>
+			{%endif%}</p>
+			<img class="profile-img img-thumbnail" src= "{{MEDIA_URL}}/{{OU.Picture}}"/>
+			<p></p>
+			<p><b>Name:</b> {{OU.FirstName}} {{OU.LastName}}</p>
+			<p><b>Email:</b> {{OU.Email}}</p>
+			<p>Rating: </b> {{OU.Rating}} Stars {% if OU.NumofRates == 0 %} (No History Yet.) {%endif%}</p>
+
+			{% if not same %}
+			<form action="/books/usercomplaint/{{OU.id}}/" method="get" >{% csrf_token %}
+			<button class="btn btn-danger" type="submit">Complain!</button>
+			</form>
+			{%endif%}
+		</div>
+
+		<div class="col-md-8">
+			<p class="username">Books!<p>
+
+			<table class="table table-striped table-bordered">
+				<thead class="thead-inverse">
+					<tr>
+						<th>Image</th>
+						<th>Title</th>
+						<th>Rating</th>
+						<th>Author</th>
+						<th>Genre</th>
+						<th>Abstract</th>
+						<th>Quality</th>
+						<th>Status</th>
+						{% if same%}
+
+						<th>Sell</th>
+						<th>Auction</th>
+						<th>Edit</th>
+						<th>Delete</th>
+						{%endif%}
+					</tr>
+				</thead>
+				<tbody>
+					{% for i in books %}
+					<tr>
+						<td><a href = /books/viewbook/{{i.id}}> <img src= "{{MEDIA_URL}}/{{i.FrontImage}}" width = 45 height = 45 </td>
+						<td><a href=/books/viewbook/{{i.id }}>{{i.Title}}</a> </td>
+						<td>{%if i.NumofRates == 0 %}No Rating{%else%}{{i.Rating}}{%endif%}</td> 
+						<td> {{i.Author}} </td>
+						<td> {{i.Genre}} </td>
+						<td> {{i.Abstract}} </td>
+						<td> 
+						{% if i.Quality == 0 %}
+						Old
+						{%endif%}
+
+						{% if i.Quality == 1 %}
+						Worn
+						{%endif%}
+
+						{% if i.Quality == 2 %}
+						Good
+						{%endif%}
+
+						{% if i.Quality == 3 %}
+						Like new
+						{%endif%}
+
+						{%if i.Quality == 4 %}
+						New
+						{% endif %}
+						 </td>
+						<td> 
+						{%if i.Status == 'auction'%}
+						<a href=/books/auctionbook/{{i.id}}>On Auction</a>
+						{%endif%}
+
+						{%if i.Status == 'sale'%}
+						<a href=/books/salebook/{{i.id}}>For Sale</a>
+						{%endif%}
+
+						{%if i.Status == 'sold'%}
+						Sold
+						{%endif%}
+
+						{%if i.Status == 'nosale' %}
+						Not For Sale
+						{%endif%}
+
+						</td>
+						{%if same %}
+						<td><a href=/books/salesetup/{{i.id}}>Sell</a></td>
+						<td><a href=/books/auctionsetup/{{i.id}}>Auction</a></td>
+						<td><a href=/books/editbook/{{i.id}}>Edit</a></td>
+						<td><a href=/books/removebook/{{i.id}}>Delete</a></td>
+						{%endif%}
+					</tr>
+					{%endfor%}
+				</tbody>
+			</table> 
+			{% if same%}
+			<br>
+			<form method="get" action="../addbook">
+			    <button class="btn btn-success" type="submit">AddBook!</button>
+			</form>
+			{% endif%}
+		</div>
+	</div>
+</div>
+
+
+<div class="container">
+	<h2>Comments</h2>
+
+	<ul>
+	{% for i in comments%}
+	<b><a href = "/books/{{i.PostedBy.id}}/">{{i.PostedBy.UserName}}</a> At {{i.PostDate}}</b><br>
+	<p id="comment"> {{i.CommentText}} </p>
+	{% endfor %}
+	</ul>
+
+	<form action="/books/usercomment/{{OU.id}}/" method="post">
+		{% csrf_token %}
+		<!--{{textform.as_p}}-->
+		<p><textarea class="form-control" id="id_Text" rows="10" cols="40" name="Text" placeholder=
+			"Leave your comment for this user..."></textarea></p>
+		<button class="btn btn-success" type="submit">Submit</button>
+	</form>
+</div>
+
+

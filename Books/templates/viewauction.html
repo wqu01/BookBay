@@ -1,0 +1,104 @@
+{% include "master.html" %}
+<div class="container">
+{% if dorate %}
+	<h2> Don't forget to rate User </h2>
+	<form action = "/books/rate/{{auction.Book.Owner.id}}/" method = "post"> {% csrf_token%}
+		{% for field in rate %}
+		<div class="form-group row">
+			<label for="{{field.id_for_label}}" class="col-sm-2 form-control-label">{{field.label}}</label> 
+			<div class="col-md-2">
+			 {{field}}
+			</div>
+		</div>
+		{% endfor %}
+		<button type="submit" class="btn btn-success">Rate!</button>
+	</form>
+{% else %}
+
+{%if auction.Open %}
+	<H2> Auction </H2>
+	<p><b>Auctiond by:</b> <a href = /books/{{auction.Book.Owner.id}}/>{{auction.Book.Owner.UserName}} </a></p>
+	<p><b>Title:</b> <a href = /books/viewbook/{{book.id}}/>{{book.Title}} </a><p>
+	
+	<p><b>Auction Ends:</b> {{auction.EndTime}}</p>
+	
+	<p><b> Minimum Bid Price:</b> <u>{{NB}}</u></p>
+	
+	</p><b>Current Bid Price:</b> <u>{{auction.CurrentBidPrice}}</u> {% if auction.LastBidder == None %} (No Bids yet.) {% else %} By: <a href = /books/{{auction.LastBidder.id}}/ >{{auction.LastBidder.UserName}} </a> {% endif%}
+	</p>
+
+{% if auction.Book.Owner != user %}
+	{% if LTmin%}
+	<p class="text-danger"><b>You must enter a number equal to or larger than {{NB}}</b></p>
+{%endif%}
+
+
+<form action = "/books/auction/{{auction.id}}/" method = "post"> {% csrf_token %}
+	<div class="row"><div class="col-md-2"> {{ form.as_p }} </div></div>
+<button class="btn btn-success" type="submit">Bid!</button>
+</form>
+<p></p>
+<form action = "/books/endsale/{{auction.id}}/" method = "post"> {% csrf_token %}
+	<button class="btn btn-success" type="submit">Buy now for {{auction.BuyOutPrice}} points!</button>
+</form>
+<p></p>
+<p><b> Your Wallet: </b> {{user.Wallet}} points <a href = /books/getpoints/> Buy More Points </a><p>
+
+{%else%} <!-- if current user owns the auction -->
+<form action = "/books/deleteauction/{{auction.id}}/" method = "post"> {% csrf_token %}
+<button class="btn btn-danger" type="submit">Delete</button>
+</form>
+
+{%endif%}
+{%else%} <!-- if not Open -->
+
+
+{% if auction.Book.Owner == user %}<!-- current user is the Seller -->
+
+{% if not auction.Payed %}
+    <b> User is waiting for book to be delivered. </b>
+{% endif%}
+<br>
+<h3> Rate User </h3>
+<form action = "/books/rate/{{auction.LastBidder.id}}/" method = "post"> {% csrf_token %}
+{{ rate.as_p }}
+<input type = "submit" value = "Rate!" />
+</form>
+
+{% else %} <!-- current user is the winner -->
+
+	<p><b>You've committed to this purchase. </b><p>
+	<b>Book:</b> <a href = "/books/{{auction.Book.id}}/"> {{auction.Book.Title}} </a> <br><br>
+
+	{%if not auction.Payed%}
+	{% if Sale %}
+		<form action = "/books/pay/1/{{auction.id}}/" method = "post"> {% csrf_token %}
+	{% else %}
+		<form action = "/books/pay/0/{{auction.id}}/" method = "post"> {% csrf_token %}
+	{% endif %}
+
+	<button class="btn btn-success" type="submit">Pay</button>
+	</form>
+	<p></p>
+	<p>*Do no pay until Seller has sent book.</p>
+{% else %}
+	<p class="lead">Payed!</p>
+{%endif%}
+
+<h2>Rate User</h2>
+<form action = "/books/rate/{{auction.Book.Owner.id}}/" method = "post"> {% csrf_token %}
+{% for field in rate %}
+		<div class="form-group row">
+			<label for="{{field.id_for_label}}" class="col-sm-2 form-control-label">{{field.label}}</label> 
+			<div class="col-md-2">
+			 {{field}}
+			</div>
+		</div>
+	{% endfor %}
+<button class="btn btn-success" type="submit">Rate!</button>
+</form>
+
+{% endif%}
+{% endif%}
+{% endif%}
+</div> <!-- this must be added if inheriting from master.html -->

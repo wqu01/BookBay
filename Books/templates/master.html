@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial=scale=">
+
+    <title>Book Bay</title>
+    <link href="/books/media/css/bootstrap.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/books/media/css/styles.css">
+
+    <script>
+    function validateForm()
+    {
+    var x=document.forms["myForm"]["keyword"].value;
+    if (x==null || x=="")
+      {
+      alert("search bar must be filled out");
+      return false;
+      }
+    }
+    </script>
+</head>
+<body>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-head">
+                <a class="navbar-brand" href='/books/'>Book Bay</a> 
+            </div>
+            
+            <form class="navbar-form navbar-left" role="search" name="myForm" action='/books/search/' method='post' onsubmit="return validateForm()"> 
+                <div class="form-group">
+                {% csrf_token %}
+            
+                    <input class="form-control" type="text" name="keyword" placeholder="Enter Search Keyword...">
+                </div>
+                    <button type="submit" class="btn btn-primary">Search</button>            
+            </form>
+            <p class="navbar-text">or <a href="/books/browse/">Browse All</a></p>
+
+            <ul class="nav navbar-nav navbar-right">
+                {% if user%}
+                {% if not user.Verified%}
+                        <META http-equiv="refresh" content="0;URL= /books/notverified/">
+                {% endif %}
+
+                <li><a href=/books/{{user.id}}/>{{user.UserName}}</a></li>
+                <li><a href='/books/getpoints/'>Wallet: {{user.Wallet}} points</a></li>
+
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Your Bids <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        {% for i in bids%}
+                        <li><a href="/books/auction/{{i.Auction.id}}/">
+                            {% if i.Auction.LastBidder == user%}
+                                {%if not i.Auction.Open%}
+                                Won!
+                                {%else%}
+                                Winning
+                                {%endif%}
+                            {%else%}
+                                Losing
+                            {%endif%}
+                            {{i.Auction.auction.CurrentBidPrice}} points
+                            {{i.Auction.Book.Title}}</a></li>
+                        {%endfor%}
+                    </ul>
+                </li>
+
+                <li>
+                    <form action="/books/logout/" method="get">
+                        <button class="btn btn-danger navbar-btn" type="submit">Sign Off</button>
+                    </form>
+                </li>
+                {%else%}
+                    <form action="/books/login/" method="get">
+                        <button class="btn btn-success navbar-btn" type="submit">Sign In</button>
+                    </form>
+                {%endif%}
+            </ul>
+        </div><!--container fluid-->
+    </nav> <!--navbar default-->
+
+        <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="/books/media/js/bootstrap.js"></script>
+</body>
